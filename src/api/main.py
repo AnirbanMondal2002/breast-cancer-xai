@@ -10,6 +10,8 @@ import numpy as np
 import os
 import cv2
 from models_code.resnet50_finetune import get_resnet50
+import os
+import urllib.request
 
 app = FastAPI()
 
@@ -29,6 +31,11 @@ MODEL_PATH = "models/checkpoints/resnet50_best.pt"
 model = get_resnet50(num_classes=2, pretrained=False)
 model.load_state_dict(torch.load(MODEL_PATH, map_location=device))
 model.eval().to(device)
+if not os.path.exists(MODEL_PATH):
+    os.makedirs("models/checkpoints", exist_ok=True)
+    print("Downloading model...")
+    url = "https://drive.google.com/file/d/1qNCiqMLZ0A36h9m8Fy2TcoTLZQU6b6-h/view?usp=sharing"
+    urllib.request.urlretrieve(url, MODEL_PATH)
 
 # ✅ Image preprocessing
 transform = transforms.Compose([
